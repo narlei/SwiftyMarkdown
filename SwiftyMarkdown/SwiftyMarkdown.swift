@@ -23,6 +23,7 @@ If that is not set, then the system default will be used.
 public struct BasicStyles : FontProperties {
 	public var fontName : String? = UIFont.preferredFont(forTextStyle: UIFontTextStyle.body).fontName
 	public var color = UIColor.black
+    public var size = CGFloat(0)
 }
 
 enum LineType : Int {
@@ -318,7 +319,7 @@ open class SwiftyMarkdown {
 		let textStyle : UIFontTextStyle
 		var fontName : String?
         var attributes = attributes
-
+        var styleSize = CGFloat(0)
 		// What type are we and is there a font name set?
 		
 		
@@ -330,6 +331,7 @@ open class SwiftyMarkdown {
 			} else {
 				textStyle = UIFontTextStyle.headline
 			}
+            styleSize = h1.size
 			attributes[NSForegroundColorAttributeName] = h1.color
 		case .h2:
 			fontName = h2.fontName
@@ -338,6 +340,7 @@ open class SwiftyMarkdown {
 			} else {
 				textStyle = UIFontTextStyle.headline
 			}
+            styleSize = h2.size
 			attributes[NSForegroundColorAttributeName] = h2.color
 		case .h3:
 			fontName = h3.fontName
@@ -346,23 +349,28 @@ open class SwiftyMarkdown {
 			} else {
 				textStyle = UIFontTextStyle.subheadline
 			}
+            styleSize = h3.size
 			attributes[NSForegroundColorAttributeName] = h3.color
 		case .h4:
 			fontName = h4.fontName
 			textStyle = UIFontTextStyle.headline
 			attributes[NSForegroundColorAttributeName] = h4.color
+            styleSize = h4.size
 		case .h5:
 			fontName = h5.fontName
 			textStyle = UIFontTextStyle.subheadline
 			attributes[NSForegroundColorAttributeName] = h5.color
+            styleSize = h5.size
 		case .h6:
 			fontName = h6.fontName
 			textStyle = UIFontTextStyle.footnote
 			attributes[NSForegroundColorAttributeName] = h6.color
+            styleSize = h6.size
 		default:
 			fontName = body.fontName
 			textStyle = UIFontTextStyle.body
 			attributes[NSForegroundColorAttributeName] = body.color
+            styleSize = body.size
 			break
 		}
 		
@@ -387,8 +395,11 @@ open class SwiftyMarkdown {
 		
 		let font = UIFont.preferredFont(forTextStyle: textStyle)
 		let styleDescriptor = font.fontDescriptor
-		let styleSize = styleDescriptor.fontAttributes[UIFontDescriptorSizeAttribute] as? CGFloat ?? CGFloat(14)
 		
+        if (styleSize == 0){
+            styleSize = styleDescriptor.fontAttributes[UIFontDescriptorSizeAttribute] as? CGFloat ?? CGFloat(14)
+        }
+        
 		var finalFont : UIFont
 		if let finalFontName = fontName, let font = UIFont(name: finalFontName, size: styleSize) {
 			finalFont = font
